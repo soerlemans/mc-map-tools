@@ -110,3 +110,20 @@ def get_shade_color(t_id) -> Tuple[int, int, int, int]:
     colors = calculate_shade_color(base_id, modifier)
 
     return colors
+
+def get_colors() -> list:
+    '''Return all colors with shades in a list.'''
+    colors_len = len(g_base_colors_list) * 4
+    colors = []
+
+    for i in range(colors_len):
+        base_id, offset = divmod(i, 4)
+        color = get_shade_color(i)
+
+        r, g, b, a = color
+        print(f'Getting shade color -> base_id: {base_id} offset: {offset} r: {r} g: {g} b: {b} a: {a}')
+
+        colors.append(color)
+
+    print('Returning colors')
+    return colors
