@@ -2,8 +2,11 @@
 
 
 # Libraries:
+import math
 import sys
 import nbtlib
+
+from typing import Tuple
 
 from wand.drawing import Drawing
 from wand.image import Image
@@ -15,7 +18,27 @@ from map_prop import *
 
 
 # Functions:
-def closest_color(t_color, t_color_options):
+def split_img(t_img: Image) -> list:
+    if t_img.width <= DEFAULT_WIDTH and t_img.height <= DEFAULT_HEIGHT:
+        print('Image does not need to be split')
+        return [t_img]
+
+    ratio_width = math.ceil(t_img.width / DEFAULT_WIDTH)
+    ratio_height = math.ceil(t_img.height / DEFAULT_height)
+    print(f'Splitting into {ratio_width * ratio_height} images')
+
+    ret = []
+    for x in range(ratio_width):
+        for y in range(ratio_height):
+            x_start = ratio_width * x
+            y_start = ratio_height * y
+            img = t_img.clone(left=x_start, top=y_start,
+                              width=DEFAULT_WIDTH, height=DEFAULT_HEIGHT)
+            print(f'Copying quadrants: x: {x_start} y: {y_start}')
+            ret.append(img)
+    pass
+
+def closest_color(t_color: Tuple[int, int, int], t_color_options: list) -> list:
     '''Find the color that looks most like another color from a list.'''
     color_diffs = []
     pr, pg, pb = t_color
@@ -28,23 +51,30 @@ def closest_color(t_color, t_color_options):
 
     return min(color_diffs)
 
-def img2map(t_in, t_out='custom_map.nbt', t_map='map.dat'):
+def img2map(t_in: str, t_out: str = 'map.dat'):
     '''Create a map nbt file out of an image.
     This requires a map file for copying purposes.'''
     # TODO: make exists a decorator
     utils.exists(t_in)
+    utils.exists(t_out)
 
     # NBT file manipulation
-    nbt = nbtlib.load(t_map)
+    nbt = nbtlib.load(t_out)
 
-    nbt_colors_size = DEFAULT_WIDTH * DEFAULT_HEIGHT
     nbt_colors = []
     colors = get_colors()
 
-    print('nbt colors:', nbt['data'])
+    # print('nbt colors:', nbt['data'])
 
     with Image(filename=t_in) as img:
+        imgs = split_img(img)
+
+        width = img.width
+        height = img.height
+
         blob = img.make_blob(format='RGB')
+        print('blob:', len(blob))
+
         for i in range(0, len(blob), 3):
             pr = blob[i]
             pg = blob[i + 1]
@@ -53,14 +83,16 @@ def img2map(t_in, t_out='custom_map.nbt', t_map='map.dat'):
             closest = closest_color((pr, pg, pb), colors)
             # print('closest: ', closest)
 
-            if i < nbt_colors_size:
-                nbt_colors.append(nbtlib.Byte(closest[1]) - 30)
-            else:
-                break
+            # No idea why I need to perform this clip,
+            # But if I dont I get an out of bounds error in the library
+            nbt_colors.append(nbtlib.Byte(closest[1] if closest[1] < 120 else 120))
 
-    # print("nbt: ", nbt_colors)
+            print(f'i: {i} len nbt_colors:', len(nbt_colors))
+
+    # Copy the color array to its proper location
     nbt['data']['colors'] = nbtlib.ByteArray(nbt_colors)
 
-    # nbt.save()
+    print(f'Done now saving to {t_out}')
+    nbt.save()
     pass
 

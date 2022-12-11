@@ -45,11 +45,12 @@ def map2img(t_in, t_out='map.png') -> None:
             print(f'x: {x}, y: {y} = r: {r}, g: {g} b: {b} a: {a}')
             draw.point(x, y)
 
-            # Save the image
-            with Image(width=DEFAULT_WIDTH, height=DEFAULT_HEIGHT) as img:
-                draw(img)
-                img.save(filename=t_out)
-            pass
+        print(f'Done now saving to "{t_out}"')
+        # Save the image
+        with Image(width=DEFAULT_WIDTH, height=DEFAULT_HEIGHT) as img:
+            draw(img)
+            img.save(filename=t_out)
+        pass
 
 if __name__ == '__main__':
     pass
