@@ -21,6 +21,7 @@ from map_prop import *
 
 # Functions:
 def split_img(t_img: Image) -> list:
+    '''Split one image into multiple.'''
     if t_img.width <= DEFAULT_WIDTH and t_img.height <= DEFAULT_HEIGHT:
         print('Image does not need to be split')
         return [t_img]
@@ -29,7 +30,7 @@ def split_img(t_img: Image) -> list:
     ratio_height = math.ceil(t_img.height / DEFAULT_height)
     print(f'Splitting into {ratio_width * ratio_height} images')
 
-    ret = []
+    imgs = []
     for x in range(ratio_width):
         for y in range(ratio_height):
             x_start = ratio_width * x
@@ -37,7 +38,7 @@ def split_img(t_img: Image) -> list:
             img = t_img.clone(left=x_start, top=y_start,
                               width=DEFAULT_WIDTH, height=DEFAULT_HEIGHT)
             print(f'Copying quadrants: x: {x_start} y: {y_start}')
-            ret.append(img)
+            imgs.append(img)
     pass
 
 def closest_color(t_color: Tuple[int, int, int], t_color_options: list) -> list:
@@ -74,6 +75,8 @@ def img2map(t_in: str, t_out: str = 'custom_map.dat', t_map: str = 'map.dat'):
     # print('nbt colors:', nbt['data'])
 
     with Image(filename=t_in) as img:
+        # Images are in a list they can be iterated through and mapped
+        # To different, nbt files
         imgs = split_img(img)
 
         width = img.width
@@ -96,6 +99,7 @@ def img2map(t_in: str, t_out: str = 'custom_map.dat', t_map: str = 'map.dat'):
 
             print(f'i: {i} byte: {byte}')
 
+    # Split this into a seperate function
     # Set some of the map properties
     nbt['data']['locked'] = nbtlib.Byte(1)
     nbt['data']['xCenter'] = nbtlib.Int(0)
