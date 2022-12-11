@@ -1,0 +1,36 @@
+<tbody><tr>
+<th>Map Color ID
+</th>
+<th>Multiply R,G,B By
+</th>
+<th>= Multiplier
+</th></tr>
+<tr>
+<td>Base Color ID&#215;4 + 0
+</td>
+<td>180
+</td>
+<td>0.71
+</td></tr>
+<tr>
+<td>Base Color ID&#215;4 + 1
+</td>
+<td>220
+</td>
+<td>0.86
+</td></tr>
+<tr>
+<td>Base Color ID&#215;4 + 2
+</td>
+<td>255 (same color)
+</td>
+<td>1
+</td></tr>
+<tr>
+<td>Base Color ID&#215;4 + 3
+</td>
+<td>135
+</td>
+<td>0.53
+</td></tr></tbody></table>
+
