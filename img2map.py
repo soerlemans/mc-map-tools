@@ -7,6 +7,7 @@ import shutil
 import sys
 import nbtlib
 
+from math import sqrt
 from typing import Tuple
 
 from wand.drawing import Drawing
@@ -41,29 +42,28 @@ def split_img(t_img: Image) -> list:
 
 def closest_color(t_color: Tuple[int, int, int], t_color_options: list) -> list:
     '''Find the color that looks most like another color from a list.'''
-    color_diffs = []
     pr, pg, pb = t_color
 
+    color_diffs = []
     for i, value in enumerate(t_color_options):
         cr, cg, cb, _ = value
 
-        color_diff = abs(pr - cr) + abs(pg - cg) + abs(pb - cg)
+        color_diff = sqrt((pr - cr)**2 + (pg - cg)**2 + (pb - cg)**2)
         color_diffs.append((color_diff, i))
 
     return min(color_diffs)
 
-def img2map(t_in: str, t_out: str = 'custom_map.dat'):
+def img2map(t_in: str, t_out: str = 'custom_map.dat', t_map: str = 'map.dat'):
     '''Create a map nbt file out of an image.
     This requires a map file for copying purposes.'''
     # TODO: make exists a decorator
     utils.exists(t_in)
 
     # Check if our template map exists
-    src_map = 'map.dat'
-    utils.exists(src_map)
+    utils.exists(t_map)
 
     # Copy the default map file
-    shutil.copyfile(src_map, t_out)
+    shutil.copyfile(t_map, t_out)
 
     # NBT file manipulation
     nbt = nbtlib.load(t_out)
@@ -95,6 +95,11 @@ def img2map(t_in: str, t_out: str = 'custom_map.dat'):
             nbt_colors.append(byte)
 
             print(f'i: {i} byte: {byte}')
+
+    # Set some of the map properties
+    nbt['data']['locked'] = nbtlib.Byte(1)
+    nbt['data']['xCenter'] = nbtlib.Int(0)
+    nbt['data']['zCenter'] = nbtlib.Int(0)
 
     # Copy the color array to its proper location
     nbt['data']['colors'] = nbtlib.ByteArray(nbt_colors)
