@@ -39,7 +39,8 @@ if __name__ == '__main__':
         print_help()
         exit(2)
 
-    # Check to see if we need to use default arg or not
+    # Determine if we should use the default argument
+    # None evaluates to False
     if out_file:
         func(in_file, out_file)
     else:

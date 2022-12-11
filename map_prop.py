@@ -1,13 +1,20 @@
 #!/usr/bin/python3
+'''
+Contains information and data about minecraft map properties.
+'''
+
+
+from typing import Tuple
 
 
 # Globals:
-MAP_WIDTH = 128
-MAP_HEIGHT = 128
+# Map width and height
+DEFAULT_WIDTH = 128
+DEFAULT_HEIGHT = 128
 
 # TODO: This list is not complete yet!
 # Colors for transofrming NTB colors to png's
-base_colors = {
+g_base_colors = {
     'NONE' : (0, 0, 0, 0),
     'GRASS' : (127, 178, 56, 255),
     'SAND' : (247, 233, 163, 255),
@@ -71,3 +78,35 @@ base_colors = {
     'RAW_IRON' : (216, 175, 147, 255),
     'GLOW_LICHEN' : (127, 167, 150, 255),
 }
+
+g_base_colors_list = list(g_base_colors.values())
+
+
+# Functions:
+def calculate_shade_color(t_base_id, t_modifier) -> Tuple[int, int, int, int]:
+    '''Calculates the proper color on basis of the modifier, for a base color ID.'''
+    colors = g_base_colors_list[t_base_id]
+    func = lambda t_x: t_x * t_modifier // 255
+
+    return tuple(map(func, colors))
+
+def get_shade_color(t_id) -> Tuple[int, int, int, int]:
+    '''Converts a given ID to its proper ID with shade.'''
+    base_id, offset = divmod(t_id, 4)
+
+    modifier = 1
+    if offset == 0:
+        modifier = 180
+    elif offset == 1:
+        modifier = 220
+    elif offset == 2:
+        modifier = 1
+    elif offset == 3:
+        modifier = 135
+    else:
+        print('Somehow we got an incorrect offset for a color!')
+        exit(5)
+
+    colors = calculate_shade_color(base_id, modifier)
+
+    return colors

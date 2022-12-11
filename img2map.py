@@ -11,8 +11,9 @@ from wand.color import Color
 
 # Local modules:
 import utils
-import map_colors
+from map_prop import *
 
 
 def img2map(t_in, t_out='custom_map.ntb'):
     pass
+
