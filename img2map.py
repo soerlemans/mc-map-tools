@@ -94,7 +94,7 @@ def img2map(t_in: str, t_out: str = 'custom_map.dat'):
             byte = nbtlib.Byte.from_unsigned(closest[1])
             nbt_colors.append(byte)
 
-            print(f'i: {i} len nbt_colors:', len(nbt_colors))
+            print(f'i: {i} byte: {byte}')
 
     # Copy the color array to its proper location
     nbt['data']['colors'] = nbtlib.ByteArray(nbt_colors)
