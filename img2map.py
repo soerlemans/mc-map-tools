@@ -3,6 +3,7 @@
 
 # Libraries:
 import math
+import shutil
 import sys
 import nbtlib
 
@@ -51,12 +52,18 @@ def closest_color(t_color: Tuple[int, int, int], t_color_options: list) -> list:
 
     return min(color_diffs)
 
-def img2map(t_in: str, t_out: str = 'map.dat'):
+def img2map(t_in: str, t_out: str = 'custom_map.dat'):
     '''Create a map nbt file out of an image.
     This requires a map file for copying purposes.'''
     # TODO: make exists a decorator
     utils.exists(t_in)
-    utils.exists(t_out)
+
+    # Check if our template map exists
+    src_map = 'map.dat'
+    utils.exists(src_map)
+
+    # Copy the default map file
+    shutil.copyfile(src_map, t_out)
 
     # NBT file manipulation
     nbt = nbtlib.load(t_out)
@@ -85,7 +92,9 @@ def img2map(t_in: str, t_out: str = 'map.dat'):
 
             # No idea why I need to perform this clip,
             # But if I dont I get an out of bounds error in the library
-            nbt_colors.append(nbtlib.Byte(closest[1] if closest[1] < 120 else 120))
+            # nbt_colors.append(nbtlib.Byte(closest[1] if closest[1] < 120 else 120))
+            byte = nbtlib.Byte(closest[1] if closest[1] < 125 else 125)
+            nbt_colors.append(byte)
 
             print(f'i: {i} len nbt_colors:', len(nbt_colors))
 
