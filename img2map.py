@@ -90,10 +90,8 @@ def img2map(t_in: str, t_out: str = 'custom_map.dat'):
             closest = closest_color((pr, pg, pb), colors)
             # print('closest: ', closest)
 
-            # No idea why I need to perform this clip,
-            # But if I dont I get an out of bounds error in the library
-            # nbt_colors.append(nbtlib.Byte(closest[1] if closest[1] < 120 else 120))
-            byte = nbtlib.Byte(closest[1] if closest[1] < 125 else 125)
+            # Use from unsiged to get the full 0 - 255 range
+            byte = nbtlib.Byte.from_unsigned(closest[1])
             nbt_colors.append(byte)
 
             print(f'i: {i} len nbt_colors:', len(nbt_colors))
