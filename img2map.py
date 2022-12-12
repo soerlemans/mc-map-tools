@@ -63,34 +63,37 @@ def img2map(t_in: str, t_out: str = 'custom_map.dat', t_map: str = 'map.dat'):
     # Check if our template map exists
     utils.exists(t_map)
 
-    # Copy the default map file
-    shutil.copyfile(t_map, t_out)
-
-    # NBT file manipulation
-    nbt = nbtlib.load(t_out)
-
     # TODO: Fix this this does not work yet
     # nbt = map_defaults()
     # nbt.filename = t_out
 
+    full_img = Image(filename=t_in)
+
     nbt_colors = []
     colors = get_colors()
 
-    with Image(filename=t_in) as img:
-        # Images are in a list they can be iterated through and mapped
-        # To different, nbt files
-        imgs = split_img(img)
+    # Images are in a list they can be iterated through and mapped
+    # To different, nbt files
+    splits = split_img(full_img)
+
+    for img_idx, (x_start, y_start, img) in enumerate(splits):
+        map_out = t_out if not img_idx else str(img_idx)
+
+        # Copy the default map file
+        shutil.copyfile(t_map, map_out)
+
+        # NBT file manipulation
+        nbt = nbtlib.load(map_out)
 
         width = img.width
         height = img.height
 
         blob = img.make_blob(format='RGB')
-        print('blob:', len(blob))
 
-        for i in range(0, len(blob), 3):
-            pr = blob[i]
-            pg = blob[i + 1]
-            pb = blob[i + 2]
+        for blob_idx in range(0, len(blob), 3):
+            pr = blob[blob_idx]
+            pg = blob[blob_idx + 1]
+            pb = blob[blob_idx + 2]
 
             closest = closest_color((pr, pg, pb), colors)
             # print('closest: ', closest)
@@ -99,13 +102,14 @@ def img2map(t_in: str, t_out: str = 'custom_map.dat', t_map: str = 'map.dat'):
             byte = nbtlib.Byte.from_unsigned(closest[1])
             nbt_colors.append(byte)
 
-            print(f'i: {i} byte: {byte}')
+            print(f'blob_idx: {blob_idx} byte: {byte}')
 
-    # Split this into a seperate function
-    # Copy the color array to its proper location
-    nbt['data']['colors'] = nbtlib.ByteArray(nbt_colors)
+        # Split this into a seperate function
+        # Copy the color array to its proper location
+        nbt['data']['colors'] = nbtlib.ByteArray(nbt_colors)
 
-    print(f'Done now saving to {t_out}')
-    nbt.save()
+        print(f'Done with image {img_idx + 1}/{len(splits)} saving to {map_out}')
+        nbt.save()
+
     pass
 

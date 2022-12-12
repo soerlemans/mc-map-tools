@@ -112,21 +112,23 @@ def get_color(t_id) -> Tuple[int, int, int, int]:
 
     return colors
 
-def get_colors() -> list:
+def get_colors(log=False) -> list:
     '''Return all colors with shades in a list.'''
     colors_len = len(BASE_COLORS) * 4
     colors = []
 
+    print('Calculating color palette...')
     for i in range(colors_len):
         base_id, offset = divmod(i, 4)
         color = get_color(i)
 
         r, g, b, a = color
-        print(f'Getting shade color -> base_id: {base_id} offset: {offset} r: {r} g: {g} b: {b} a: {a}')
+        if log:
+            print(f'Getting shade color -> base_id: {base_id} offset: {offset} r: {r} g: {g} b: {b} a: {a}')
 
         colors.append(color)
 
-    print('Returning colors')
+    print('Returning color palette')
     return colors
 
 def map_defaults() -> File:
