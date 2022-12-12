@@ -54,14 +54,12 @@ def closest_color(t_color: Tuple[int, int, int], t_color_options: list) -> list:
 
     return min(color_diffs)
 
-def img2map(t_in: str, t_out: str = 'custom_map.dat', t_map: str = 'map.dat'):
+def img2map(t_in: str, t_out: str = 'custom_map.dat', t_default_map: str = 'map.dat'):
     '''Create a map nbt file out of an image.
     This requires a map file for copying purposes.'''
     # TODO: make exists a decorator
     utils.exists(t_in)
-
-    # Check if our template map exists
-    utils.exists(t_map)
+    utils.exists(t_default_map)
 
     # TODO: Fix this this does not work yet
     # nbt = map_defaults()
@@ -77,10 +75,11 @@ def img2map(t_in: str, t_out: str = 'custom_map.dat', t_map: str = 'map.dat'):
     splits = split_img(full_img)
 
     for img_idx, (x_start, y_start, img) in enumerate(splits):
-        map_out = t_out if not img_idx else str(img_idx)
+        backup_out = f'{t_out.removesuffix(".dat")}_{str(img_idx)}.png'
+        map_out = t_out if not img_idx else backup_out
 
         # Copy the default map file
-        shutil.copyfile(t_map, map_out)
+        shutil.copyfile(t_default_map, map_out)
 
         # NBT file manipulation
         nbt = nbtlib.load(map_out)
@@ -102,7 +101,7 @@ def img2map(t_in: str, t_out: str = 'custom_map.dat', t_map: str = 'map.dat'):
             byte = nbtlib.Byte.from_unsigned(closest[1])
             nbt_colors.append(byte)
 
-            print(f'blob_idx: {blob_idx} byte: {byte}')
+            # print(f'blob_idx: {blob_idx} byte: {byte}')
 
         # Split this into a seperate function
         # Copy the color array to its proper location
@@ -110,6 +109,5 @@ def img2map(t_in: str, t_out: str = 'custom_map.dat', t_map: str = 'map.dat'):
 
         print(f'Done with image {img_idx + 1}/{len(splits)} saving to {map_out}')
         nbt.save()
-
     pass
 
