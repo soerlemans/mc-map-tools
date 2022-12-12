@@ -64,12 +64,14 @@ def img2map(t_in: str, t_out: str = 'custom_map.dat', t_map: str = 'map.dat'):
     utils.exists(t_map)
 
     # Copy the default map file
-    # shutil.copyfile(t_map, t_out)
+    shutil.copyfile(t_map, t_out)
 
     # NBT file manipulation
-    # nbt = nbtlib.load(t_out)
-    nbt = map_defaults()
-    nbt.filename = t_out
+    nbt = nbtlib.load(t_out)
+
+    # TODO: Fix this this does not work yet
+    # nbt = map_defaults()
+    # nbt.filename = t_out
 
     nbt_colors = []
     colors = get_colors()
@@ -100,11 +102,6 @@ def img2map(t_in: str, t_out: str = 'custom_map.dat', t_map: str = 'map.dat'):
             print(f'i: {i} byte: {byte}')
 
     # Split this into a seperate function
-    # Set some of the map properties
-    nbt['data']['locked'] = nbtlib.Byte(1)
-    nbt['data']['xCenter'] = nbtlib.Int(0)
-    nbt['data']['zCenter'] = nbtlib.Int(0)
-
     # Copy the color array to its proper location
     nbt['data']['colors'] = nbtlib.ByteArray(nbt_colors)
 

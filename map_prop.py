@@ -146,6 +146,7 @@ def map_defaults() -> File:
 
     data['scale'] = Byte(0) # Set nbt_map scale to 1:1
     data['dimension'] = Byte(1) # Set dimension to overworld
+
     # Tracking settings:
     data['trackingPosition'] = Byte(0) # Do not show the player location arrow
     data['unlimitedTracking'] = Byte(0) # Do not show tracking position from unlimited distance

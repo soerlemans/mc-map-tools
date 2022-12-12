@@ -15,7 +15,6 @@ import utils
 from map_prop import *
 
 
-# TODO: Split this function?
 def map2img(t_in, t_out='map.png') -> None:
     '''Convert a map to an image!'''
     # TODO: make exists a decorator

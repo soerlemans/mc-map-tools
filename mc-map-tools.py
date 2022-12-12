@@ -32,7 +32,7 @@ if __name__ == '__main__':
     if operation == 'img':
         func = img2map.img2map
     elif operation == 'map':
-        func = img2map.map2img
+        func = map2img.map2img
     else:
         print('Invalid operation!')
         print_help()
