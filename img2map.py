@@ -28,18 +28,25 @@ def split_img(t_img: Image) -> list:
 
     ratio_width = math.ceil(t_img.width / DEFAULT_WIDTH)
     ratio_height = math.ceil(t_img.height / DEFAULT_HEIGHT)
-    print(f'Splitting into {ratio_width * ratio_height} images')
+    needed_splits = ratio_width * ratio_height
+    print(f'Splitting into {needed_splits} images')
 
     imgs = []
+    counter = 0
     for x in range(ratio_width):
         for y in range(ratio_height):
-            x_start = ratio_width * x
-            y_start = ratio_height * y
-            img = t_img.clone(left=x_start, top=y_start,
-                              width=DEFAULT_WIDTH, height=DEFAULT_HEIGHT)
-            print(f'Img starts at: x: {x_start} y: {y_start}')
-            imgs.append(tuple(x_start, y_start, img))
-    pass
+            counter += 1
+
+            x_start = x * DEFAULT_WIDTH
+            y_start = y * DEFAULT_HEIGHT
+
+            print(f'{x_start} {DEFAULT_WIDTH} {y_start} {DEFAULT_HEIGHT} {y}')
+            img = t_img[x_start:DEFAULT_WIDTH, y_start:DEFAULT_HEIGHT]
+
+            print(f'Img ({counter}/{needed_splits}) starts at: x: {x_start} y: {y_start}')
+            imgs.append((x_start, y_start, img))
+
+    return imgs
 
 def closest_color(t_color: Tuple[int, int, int], t_color_options: list) -> list:
     '''Find the color that looks most like another color from a list.'''
