@@ -30,7 +30,7 @@ def map2img(t_in, t_out='map.png') -> None:
     with Drawing() as draw:
         # Loop through the maps color values and draw them to the image
         for i, color_id in enumerate(nbt_colors):
-            r, g, b, a =  get_shade_color(color_id)
+            r, g, b, a =  get_color(color_id)
             color_str = f'#{r:02x}{g:02x}{b:02x}'
 
             # Set the color values
@@ -45,7 +45,7 @@ def map2img(t_in, t_out='map.png') -> None:
             print(f'x: {x}, y: {y} = r: {r}, g: {g} b: {b} a: {a}')
             draw.point(x, y)
 
-        print(f'Done now saving to "{t_out}"')
+        print(f'Done now saving to {t_out}')
         # Save the image
         with Image(width=DEFAULT_WIDTH, height=DEFAULT_HEIGHT) as img:
             draw(img)

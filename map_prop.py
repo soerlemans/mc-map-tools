@@ -6,15 +6,16 @@ Contains information and data about minecraft map properties.
 
 from typing import Tuple
 
+from nbtlib import *
+
 
 # Globals:
-# Map width and height
+# Default map width and height
 DEFAULT_WIDTH = 128
 DEFAULT_HEIGHT = 128
 
-# TODO: This list is not complete yet!
-# Colors for transofrming NTB colors to png's
-g_base_colors = {
+# Dictionary of all possible base color values that can be used in a map
+BASE_COLORS = {
     'NONE' : (0, 0, 0, 0),
     'GRASS' : (127, 178, 56, 255),
     'SAND' : (247, 233, 163, 255),
@@ -79,18 +80,18 @@ g_base_colors = {
     'GLOW_LICHEN' : (127, 167, 150, 255),
 }
 
-g_base_colors_list = list(g_base_colors.values())
-
-
 # Functions:
 def calculate_shade_color(t_base_id, t_modifier) -> Tuple[int, int, int, int]:
     '''Calculates the proper color on basis of the modifier, for a base color ID.'''
-    colors = g_base_colors_list[t_base_id]
+    colors = get_base_color(t_base_id)
     func = lambda t_x: t_x * t_modifier // 255
 
     return tuple(map(func, colors))
 
-def get_shade_color(t_id) -> Tuple[int, int, int, int]:
+def get_base_color(t_id) -> Tuple[int, int, int, int]:
+    return list(BASE_COLORS.values())[t_id]
+
+def get_color(t_id) -> Tuple[int, int, int, int]:
     '''Converts a given ID to its proper ID with shade.'''
     base_id, offset = divmod(t_id, 4)
 
@@ -113,12 +114,12 @@ def get_shade_color(t_id) -> Tuple[int, int, int, int]:
 
 def get_colors() -> list:
     '''Return all colors with shades in a list.'''
-    colors_len = len(g_base_colors_list) * 4
+    colors_len = len(BASE_COLORS) * 4
     colors = []
 
     for i in range(colors_len):
         base_id, offset = divmod(i, 4)
-        color = get_shade_color(i)
+        color = get_color(i)
 
         r, g, b, a = color
         print(f'Getting shade color -> base_id: {base_id} offset: {offset} r: {r} g: {g} b: {b} a: {a}')
@@ -127,3 +128,42 @@ def get_colors() -> list:
 
     print('Returning colors')
     return colors
+
+def map_defaults() -> File:
+    '''Creates a map with the most sensible default settings.'''
+    nbt_map = nbt.File(gzipped=True, byteorder='little', filename='')
+    nbt_map['data'] = Compound()
+
+    # Set Minecraft data version to latest version as of 12/12/2022
+    #nbt_map['DataVersion'] = Int(3218) # 1.19.3
+
+    # My server uses 1.19.2
+    nbt_map['DataVersion'] = Int(3120) # 1.19.2
+
+    # Set data section:
+    # Create a reference to the data dict
+    data = nbt_map['data']
+
+    data['scale'] = Byte(0) # Set nbt_map scale to 1:1
+    data['dimension'] = Byte(1) # Set dimension to overworld
+    # Tracking settings:
+    data['trackingPosition'] = Byte(0) # Do not show the player location arrow
+    data['unlimitedTracking'] = Byte(0) # Do not show tracking position from unlimited distance
+
+    # Lock the nbt_map so it wont change
+    data['locked'] = Byte(1)
+
+    # Set X and Z centers
+    data['xCenter'] = Int(0)
+    data['yCenter'] = Int(0)
+
+    # Banners:
+    data['banners'] = List([]) # Set no banners
+
+    # Frames:
+    data['frames'] = List([]) # Set no frames
+
+    # Colors:
+    data['colors'] = ByteArray([Byte(0)])
+
+    return nbt_map

@@ -3,8 +3,8 @@
 
 import sys
 
-from img2map import *
-from map2img import *
+import img2map
+import map2img
 
 
 def print_help():
@@ -20,7 +20,6 @@ def print_help():
 if __name__ == '__main__':
     argc = len(sys.argv)
     if argc < 3:
-        print('Not enough arguments!')
         print('Pass atleast three arguments.')
         print_help()
         exit(1)
@@ -31,9 +30,9 @@ if __name__ == '__main__':
 
     func = None
     if operation == 'img':
-        func = img2map
+        func = img2map.img2map
     elif operation == 'map':
-        func = map2img
+        func = img2map.map2img
     else:
         print('Invalid operation!')
         print_help()
