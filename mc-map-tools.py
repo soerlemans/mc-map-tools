@@ -27,6 +27,7 @@ if __name__ == '__main__':
     operation = sys.argv[1]
     in_file = sys.argv[2]
     out_file = sys.argv[3] if argc >= 4 else None
+    file_idx = int(sys.argv[4]) if argc >= 5 else 0
 
     func = None
     if operation == 'img':
@@ -41,7 +42,7 @@ if __name__ == '__main__':
     # Determine if we should use the default argument
     # None evaluates to False
     if out_file:
-        func(in_file, out_file)
+        func(in_file, out_file, t_start = file_idx)
     else:
         func(in_file)
 
