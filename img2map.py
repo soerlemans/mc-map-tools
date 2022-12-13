@@ -33,10 +33,30 @@ def print_view(t_x, t_y, t_w, t_h, t_corner='+'):
     print(frame)
     pass
 
-def round_up_img(t_img:Image) -> Image:
-    width, height = t_img.size
-    ratio_width
-    pass
+def size_up_img(t_img:Image, t_crop=False) -> Image:
+    '''Rounds the image up to the closer bound, whilst preserving aspect ratio.'''
+    w, h = t_img.size
+
+    # Get the full with if we would upsize
+    # TODO: Make a function for calculating these values
+    full_w = w * math.ceil(w / DEFAULT_WIDTH)
+    full_h = height * math.ceil(height / DEFAULT_HEIGHT)
+
+    diff_width = full_w - w
+    diff_height = full_h - h
+
+    new_w = w
+    new_h = h
+
+    # Prefer the smallest distance to upsize, this way we wont crop the image
+    # t_crop should invert the result to crop if True
+    if diff_width < diff_height and not t_crop:
+        new_w = full_w
+    else:
+        new_h = full_h
+
+    t_img.resize(new_w, new_h)
+    return t_img
 
 def split_img(t_img: Image) -> list:
     '''Split one image into multiple, so it fits into a map.'''
