@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 
 # Libraries:
@@ -33,6 +33,7 @@ def print_view(t_x, t_y, t_w, t_h, t_corner='+'):
     print(frame)
     pass
 
+# TODO: Center images on upsize
 def size_up_img(t_img:Image, t_crop=False) -> Image:
     '''Rounds the image up to the closer bound, whilst preserving aspect ratio.'''
     w, h = t_img.size
