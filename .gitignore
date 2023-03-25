@@ -3,3 +3,6 @@ data/
 
 # Ignore Python virtual environment
 .venv/
+
+# Ignore python caching
+__pycache__/
